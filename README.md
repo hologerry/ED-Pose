@@ -2,7 +2,6 @@
 
 This is the official pytorch implementation of our ICLR 2023 paper ["Explicit Box Detection Unifies End-to-End Multi-Person Pose Estimation "](https://openreview.net/pdf?id=s4WVupnJjmX). 
 
-Authors: Jie Yang, Ailing Zeng, Shilong Liu, Feng Li, Ruimao Zhang, Lei Zhang
 # Introduction
 We present ED-Pose, an end-to-end framework with Explicit box Detection for multi-person Pose estimation. ED-Pose re-considers this task as two explicit box detection processes with a unified representation and regression supervision.
 In general, ED-Pose is conceptually simple without post-processing and dense heatmap supervision.
@@ -12,23 +11,23 @@ In general, ED-Pose is conceptually simple without post-processing and dense hea
 ![method](figs/edpose_git.jpg "model arch")
 
 ## Model Zoo
-We have put our model checkpoints here.
+We have put our model checkpoints [here](https://drive.google.com/drive/folders/1PrPazRK9neyIDcO9yAOya0nKKNAEG1gc?usp=sharing).
 
 ### Results on COCO val2017 dataset
 
 |  Model  |   Backbone    | Lr schd | mAP  | AP<sup>50</sup> | AP<sup>75</sup> | AP<sup>M</sup> | AP<sup>L</sup> |                                             Download                                              |
 |:-------:|:-------------:|:-------:|:----:|:---------------:|:---------------:|:--------------:|:--------------:|:-------------------------------------------------------------------------------------------------:|
-| ED-Pose |     R-50      |   60e   | 71.7 |      89.7       |      78.8       |      66.2      |      79.7      |                                           Google Drive                                            |
-|  ED-Pose   |    Swin-L     |  60e   | 74.3 |      91.5       |      81.7       |      68.5      |      82.7      |                                           Google Drive                                            |
-|  ED-Pose   | Swin-L-5scale |  60e   | 75.8 |      92.3       |      82.9       |      70.4      |      83.5      | Google Drive |
+| ED-Pose |     R-50      |   60e   | 71.7 |      89.7       |      78.8       |      66.2      |      79.7      |                                           [Google Drive](https://drive.google.com/file/d/1Q5OpZeCvaSgqC0NlKeRiJFmHBtusxnjX/view?usp=sharing)                                            |
+|  ED-Pose   |    Swin-L     |  60e   | 74.3 |      91.5       |      81.7       |      68.5      |      82.7      |                                           [Google Drive](https://drive.google.com/file/d/11NEwOfQhr6Zb46qzexxEYSQekLyeomu-/view?usp=share_link)                                            |
+|  ED-Pose   | Swin-L-5scale |  60e   | 75.8 |      92.3       |      82.9       |      70.4      |      83.5      | [Google Drive](https://drive.google.com/file/d/1lKj4JmQjG_WoIcLOc_LhHOSbomBGIpra/view?usp=sharing) |
 
 ### Results on CrowdPose test dataset
 
 | Model | Backbone | Lr schd | mAP  | AP<sup>50</sup> | AP<sup>75</sup> | AP<sup>E</sup> | AP<sup>M</sup> | AP<sup>H</sup> |                                             Download                                              |
 |:-----:|:--------:|:-------:|:----:|:---------------:|:---------------:|:--------------:|:--------------:|:--------------:|:-------------------------------------------------------------------------------------------------:|
-| ED-Pose  |  R-50  |   80e   | 69.9 |      88.6       |      75.8       |      77.7      |      70.6      |      60.9      |                                           Google Drive                                            |
-| ED-Pose  |  Swin-L  |  80e   | 73.1 |      90.5       |      79.8       |      80.5      |      73.8      |      63.8      |                                           Google Drive                                            |
-| ED-Pose  |  Swin-L-5scale  |  80e   | 76.6 |      92.4       |      83.3       |      83.0      |      77.3      |      68.3      | Google Drive |
+| ED-Pose  |  R-50  |   80e   | 69.9 |      88.6       |      75.8       |      77.7      |      70.6      |      60.9      |                                           [Google Drive](https://drive.google.com/file/d/1CyO520iLTtCstiERvBztNWxu9FiiFGxq/view?usp=sharing)                                            |
+| ED-Pose  |  Swin-L  |  80e   | 73.1 |      90.5       |      79.8       |      80.5      |      73.8      |      63.8      |                                           [Google Drive](https://drive.google.com/file/d/1DyqCQr9fu8pkKkX34si6c3makFQtieJl/view?usp=share_link)                                            |
+| ED-Pose  |  Swin-L-5scale  |  80e   | 76.6 |      92.4       |      83.3       |      83.0      |      77.3      |      68.3      | [Google Drive](https://drive.google.com/file/d/1fxFhh5Z3qLOB1zHVNYNvxQq1RHXFzw5R/view?usp=sharing) |
 
 ### Note:
 - Any test-time augmentations is not used.
@@ -226,6 +225,7 @@ export pretrain_model_path=/path/to/your/swin_L_384_22k
 
 </details>
 
+We have put the Swin-L model pretrained on ImageNet-22k [here](https://drive.google.com/file/d/1WcjnAzu3s37TTBW2paA2QK2aDvQuSCBI/view?usp=sharing).
 
 ### Evaluation on COCO:
 
@@ -334,3 +334,16 @@ export pretrain_model_path=/path/to/your/swin_L_384_22k
 ```
 
 </details>
+
+## Cite ED-Pose
+
+```
+@inproceedings{
+yang2023explicit,
+title={Explicit Box Detection Unifies End-to-End Multi-Person Pose Estimation},
+author={Jie Yang and Ailing Zeng and Shilong Liu and Feng Li and Ruimao Zhang and Lei Zhang},
+booktitle={International Conference on Learning Representations},
+year={2023},
+url={https://openreview.net/forum?id=s4WVupnJjmX}
+}
+```
