@@ -29,7 +29,7 @@ We have put our model checkpoints [here](https://drive.google.com/drive/folders/
 | ED-Pose  |  Swin-L  |  80e   | 73.1 |      90.5       |      79.8       |      80.5      |      73.8      |      63.8      |                                           [Google Drive](https://drive.google.com/file/d/1DyqCQr9fu8pkKkX34si6c3makFQtieJl/view?usp=share_link)                                            |
 | ED-Pose  |  Swin-L-5scale  |  80e   | 76.6 |      92.4       |      83.3       |      83.0      |      77.3      |      68.3      | [Google Drive](https://drive.google.com/file/d/1fxFhh5Z3qLOB1zHVNYNvxQq1RHXFzw5R/view?usp=sharing) |
 
-### Comparison on COCO test-dev dataset
+### Results on COCO test-dev dataset
 | Model      | Backbone | Loss   | mAP  | AP<sup>50</sup> | AP<sup>75</sup> | AP<sup>M</sup> | AP<sup>L</sup> |
 | ---------- | -------- | ------ | ---- | --------------- | --------------- | -------------- | -------------- |
 | [DirectPose](https://arxiv.org/abs/1911.07451)| R-50     | Reg    | 62.2 | 86.4            | 68.2            | 56.7           | 69.8           |
