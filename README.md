@@ -15,11 +15,11 @@ We have put our model checkpoints [here](https://drive.google.com/drive/folders/
 
 ### Results on COCO val2017 dataset
 
-|  Model  |   Backbone    | Lr schd | mAP  | AP<sup>50</sup> | AP<sup>75</sup> | AP<sup>M</sup> | AP<sup>L</sup> |                                             Download                                              |
-|:-------:|:-------------:|:-------:|:----:|:---------------:|:---------------:|:--------------:|:--------------:|:-------------------------------------------------------------------------------------------------:|
-| ED-Pose |     R-50      |   60e   | 71.7 |      89.7       |      78.8       |      66.2      |      79.7      |                                           [Google Drive](https://drive.google.com/file/d/1Q5OpZeCvaSgqC0NlKeRiJFmHBtusxnjX/view?usp=sharing)                                            |
-|  ED-Pose   |    Swin-L     |  60e   | 74.3 |      91.5       |      81.7       |      68.5      |      82.7      |                                           [Google Drive](https://drive.google.com/file/d/11NEwOfQhr6Zb46qzexxEYSQekLyeomu-/view?usp=share_link)                                            |
-|  ED-Pose   | Swin-L-5scale |  60e   | 75.8 |      92.3       |      82.9       |      70.4      |      83.5      | [Google Drive](https://drive.google.com/file/d/1lKj4JmQjG_WoIcLOc_LhHOSbomBGIpra/view?usp=sharing) |
+|  Model  |   Backbone    | Lr schd | mAP  | AP<sup>50</sup> | AP<sup>75</sup> | AP<sup>M</sup> | AP<sup>L</sup> |Time (ms) |                                             Download                                              |
+|:-------:|:-------------:|:-------:|:----:|:---------------:|:---------------:|:--------------:|:--------------:|:--------------:|:-------------------------------------------------------------------------------------------------:|
+| ED-Pose |     R-50      |   60e   | 71.7 |      89.7       |      78.8       |      66.2      |      79.7      |       51       |                             [Google Drive](https://drive.google.com/file/d/1Q5OpZeCvaSgqC0NlKeRiJFmHBtusxnjX/view?usp=sharing)                                            |
+|  ED-Pose   |    Swin-L     |  60e   | 74.3 |      91.5       |      81.7       |      68.5      |      82.7      |           88|                                [Google Drive](https://drive.google.com/file/d/11NEwOfQhr6Zb46qzexxEYSQekLyeomu-/view?usp=share_link)                                            |
+|  ED-Pose   | Swin-L-5scale |  60e   | 75.8 |      92.3       |      82.9       |      70.4      |      83.5     |142 | [Google Drive](https://drive.google.com/file/d/1lKj4JmQjG_WoIcLOc_LhHOSbomBGIpra/view?usp=sharing) |
 
 ### Results on CrowdPose test dataset
 
@@ -29,8 +29,21 @@ We have put our model checkpoints [here](https://drive.google.com/drive/folders/
 | ED-Pose  |  Swin-L  |  80e   | 73.1 |      90.5       |      79.8       |      80.5      |      73.8      |      63.8      |                                           [Google Drive](https://drive.google.com/file/d/1DyqCQr9fu8pkKkX34si6c3makFQtieJl/view?usp=share_link)                                            |
 | ED-Pose  |  Swin-L-5scale  |  80e   | 76.6 |      92.4       |      83.3       |      83.0      |      77.3      |      68.3      | [Google Drive](https://drive.google.com/file/d/1fxFhh5Z3qLOB1zHVNYNvxQq1RHXFzw5R/view?usp=sharing) |
 
+### Comparison on COCO test-dev dataset
+| Model      | Backbone | Loss   | mAP  | AP<sup>50</sup> | AP<sup>75</sup> | AP<sup>M</sup> | AP<sup>L</sup> |
+| ---------- | -------- | ------ | ---- | --------------- | --------------- | -------------- | -------------- |
+| [DirectPose](https://arxiv.org/abs/1911.07451)| R-50     | Reg    | 62.2 | 86.4            | 68.2            | 56.7           | 69.8           |
+| [DirectPose](https://arxiv.org/abs/1911.07451) | R-101    | Reg    | 63.3 | 86.7            | 69.4            | 57.8           | 71.2           |
+| [FCPose](https://arxiv.org/abs/2105.14185)     | R-50     | Reg+HM | 64.3 | 87.3            | 71.0            | 61.6           | 70.5           |
+| [FCPose](https://arxiv.org/abs/2105.14185)     | R-101    | Reg+HM | 65.6 | 87.9            | 72.6            | 62.1           | 72.3           |
+| [InsPose](https://arxiv.org/abs/2107.08982)    | R-50     | Reg+HM | 65.4 | 88.9            | 71.7            | 60.2           | 72.7           |
+| [InsPose](https://arxiv.org/abs/2107.08982)    | R-101    | Reg+HM | 66.3 | 89.2            | 73.0            | 61.2           | 73.9           |
+| [PETR](https://openaccess.thecvf.com/content/CVPR2022/papers/Shi_End-to-End_Multi-Person_Pose_Estimation_With_Transformers_CVPR_2022_paper.pdf)       | R-50     | Reg+HM | 67.6 | 89.8            | 75.3            | 61.6           | 76.0           |
+| [PETR](https://openaccess.thecvf.com/content/CVPR2022/papers/Shi_End-to-End_Multi-Person_Pose_Estimation_With_Transformers_CVPR_2022_paper.pdf)       | Swin-L   | Reg+HM | 70.5 | 91.5            | 78.7            | 65.2           | 78.0           |
+| ED-Pose    | R-50     | Reg    | 69.8 | 90.2            | 77.2            | 64.3           | 77.4           |
+| ED-Pose    | Swin-L   | Reg    | 72.7 | 92.3            | 80.9            | 67.6           | 80.0           |
 ### Note:
-- Any test-time augmentations is not used.
+- Any test-time augmentations is not used for ED-Pose.
 - We use the Object365 dataset to pretrain the human detection of ED-Pose under the Swin-L-5scale setting.
 
 ## Environment Setup 
@@ -335,7 +348,7 @@ export pretrain_model_path=/path/to/your/swin_L_384_22k
 
 </details>
 
-## Cite ED-Pose
+### Cite ED-Pose
 
 ```
 @inproceedings{
