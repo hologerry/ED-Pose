@@ -1,6 +1,6 @@
-# ED-Pose
+# ED-Pose[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/explicit-box-detection-unifies-end-to-end/multi-person-pose-estimation-on-crowdpose)](https://paperswithcode.com/sota/multi-person-pose-estimation-on-crowdpose?p=explicit-box-detection-unifies-end-to-end)
 
-This is the official pytorch implementation of our ICLR 2023 paper ["Explicit Box Detection Unifies End-to-End Multi-Person Pose Estimation "](https://openreview.net/pdf?id=s4WVupnJjmX). 
+This is the official pytorch implementation of our ICLR 2023 paper ["Explicit Box Detection Unifies End-to-End Multi-Person Pose Estimation "](https://arxiv.org/pdf/2302.01593.pdf). 
 
 # Introduction
 We present ED-Pose, an end-to-end framework with Explicit box Detection for multi-person Pose estimation. ED-Pose re-considers this task as two explicit box detection processes with a unified representation and regression supervision.
@@ -9,6 +9,14 @@ In general, ED-Pose is conceptually simple without post-processing and dense hea
 2. ED-Pose achieves the state-of-the-art with 76.6 AP on CrowdPose without test-time augmentation.
 # Methods
 ![method](figs/edpose_git.jpg "model arch")
+
+## Todo
+
+This repo contains further modifications including:
+
+- [ ] Integrated into [detrex](https://github.com/IDEA-Research/detrex).
+
+- [ ] Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces) using [Gradio](https://github.com/gradio-app/gradio).
 
 ## Model Zoo
 We have put our model checkpoints [here](https://drive.google.com/drive/folders/1PrPazRK9neyIDcO9yAOya0nKKNAEG1gc?usp=sharing).
