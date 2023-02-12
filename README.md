@@ -1,4 +1,6 @@
-# ED-Pose[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/explicit-box-detection-unifies-end-to-end/multi-person-pose-estimation-on-crowdpose)](https://paperswithcode.com/sota/multi-person-pose-estimation-on-crowdpose?p=explicit-box-detection-unifies-end-to-end)
+# ED-Pose
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/explicit-box-detection-unifies-end-to-end/multi-person-pose-estimation-on-crowdpose)](https://paperswithcode.com/sota/multi-person-pose-estimation-on-crowdpose?p=explicit-box-detection-unifies-end-to-end)
 
 This is the official pytorch implementation of our ICLR 2023 paper ["Explicit Box Detection Unifies End-to-End Multi-Person Pose Estimation "](https://arxiv.org/pdf/2302.01593.pdf). 
 
