@@ -4,6 +4,26 @@
 
 This is the official pytorch implementation of our ICLR 2023 paper ["Explicit Box Detection Unifies End-to-End Multi-Person Pose Estimation "](https://arxiv.org/pdf/2302.01593.pdf). 
 
+# Visualization 
+**All videos are using per-frame estimation without temporal smoothing.**
+
+**Case1: For single-person dancer pose estimation:**
+
+ <img src="https://github.com/IDEA-Research/ED-Pose/blob/master/figs/dancer.gif" style="height:200px" />
+ 
+**Case2: For self-occlusion scene:**
+
+<img src="https://github.com/IDEA-Research/ED-Pose/blob/master/figs/fitness%20scene%20with%20occlusion.gif" style="height:200px" />
+
+**Case3: For occlusion scenes with extended keypoint prediction beyond the image thanks to the regression loss:**
+
+<img src="https://github.com/IDEA-Research/ED-Pose/blob/master/figs/crowd%20scene%20with%20extened%20prediction.gif" style="height:200px" />  <img src="https://github.com/IDEA-Research/ED-Pose/blob/master/figs/occlusion%20with%20extended%20prediction.gif" style="height:200px" />  
+ 
+**Case4: For fast-moving scenes:**
+
+<img src="https://github.com/IDEA-Research/ED-Pose/blob/master/figs/crowd%20scene.gif" style="height:200px" />  <img src="https://github.com/IDEA-Research/ED-Pose/blob/master/figs/fast%20speed.gif" style="height:200px" />  
+ 
+ 
 # Introduction
 We present ED-Pose, an end-to-end framework with Explicit box Detection for multi-person Pose estimation. ED-Pose re-considers this task as two explicit box detection processes with a unified representation and regression supervision.
 In general, ED-Pose is conceptually simple without post-processing and dense heatmap supervision.
