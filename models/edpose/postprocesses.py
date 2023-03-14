@@ -61,6 +61,7 @@ class PostProcess(nn.Module):
         img_h, img_w = target_sizes.unbind(1)
         Z_pred = Z_pred * torch.stack([img_w, img_h], dim=1).repeat(1, self.num_body_points)[:, None, :]
         keypoints_res = torch.zeros_like(keypoints)
+        # print("keypoints_res shape", keypoints_res.size())
         keypoints_res[..., 0::3] = Z_pred[..., 0::2]
         keypoints_res[..., 1::3] = Z_pred[..., 1::2]
         keypoints_res[..., 2::3] = V_pred[..., 0::1]

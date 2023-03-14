@@ -2,6 +2,7 @@ import functools
 import logging
 import os
 import sys
+
 from termcolor import colored
 
 
@@ -27,9 +28,7 @@ class _ColorfulFormatter(logging.Formatter):
 
 # so that calling setup_logger multiple times won't add many handlers
 @functools.lru_cache()
-def setup_logger(
-    output=None, distributed_rank=0, *, color=True, name="imagenet", abbrev_name=None
-):
+def setup_logger(output=None, distributed_rank=0, *, color=True, name="imagenet", abbrev_name=None):
     """
     Initialize the detectron2 logger and set its verbosity level to "INFO".
 
@@ -49,10 +48,7 @@ def setup_logger(
     if abbrev_name is None:
         abbrev_name = name
 
-    plain_formatter = logging.Formatter(
-        '[%(asctime)s.%(msecs)03d]: %(message)s',
-        datefmt='%m/%d %H:%M:%S'
-    )
+    plain_formatter = logging.Formatter("[%(asctime)s.%(msecs)03d]: %(message)s", datefmt="%m/%d %H:%M:%S")
     # stdout logging: master only
     if distributed_rank == 0:
         ch = logging.StreamHandler(stream=sys.stdout)
@@ -85,6 +81,7 @@ def setup_logger(
         logger.addHandler(fh)
 
     return logger
+
 
 @functools.lru_cache(maxsize=None)
 def _cached_log_stream(filename):

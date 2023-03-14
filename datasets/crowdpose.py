@@ -1,20 +1,27 @@
 import json
 import os
 import random
+
 from pathlib import Path
+
 import cv2
 import numpy as np
 import torch
 import torch.utils.data
 import torchvision
+
+from crowdposetools.coco import COCO
 from numpy.core.defchararray import array
 from PIL import Image
-from crowdposetools.coco import COCO
-from util.box_ops import box_cxcywh_to_xyxy, box_iou
-import datasets.transforms_crowdpose as T
-from datasets.data_util import preparing_dataset
 
-__all__ = ['build']
+import datasets.transforms_crowdpose as T
+
+from datasets.data_util import preparing_dataset
+from util.box_ops import box_cxcywh_to_xyxy, box_iou
+
+
+__all__ = ["build"]
+
 
 class CocoDetection(torch.utils.data.Dataset):
     def __init__(self, root_path, image_set, transforms, return_masks):
@@ -51,8 +58,8 @@ class CocoDetection(torch.utils.data.Dataset):
         ann_ids = self.coco.getAnnIds(imgIds=image_id)
         target = self.coco.loadAnns(ann_ids)
 
-        target = {'image_id': image_id, 'annotations': target}
-        img = Image.open(self.img_folder / self.coco.loadImgs(image_id)[0]['file_name'])
+        target = {"image_id": image_id, "annotations": target}
+        img = Image.open(self.img_folder / self.coco.loadImgs(image_id)[0]["file_name"])
         img, target = self.prepare(img, target)
         if self._transforms is not None:
             img, target = self._transforms(img, target)
@@ -90,8 +97,8 @@ class ConvertCocoPolysToMask(object):
         image_id = target["image_id"]
         image_id = torch.tensor([image_id])
         anno = target["annotations"]
-        anno = [obj for obj in anno if 'iscrowd' not in obj or obj['iscrowd'] == 0]
-        anno = [obj for obj in anno if obj['num_keypoints'] != 0]
+        anno = [obj for obj in anno if "iscrowd" not in obj or obj["iscrowd"] == 0]
+        anno = [obj for obj in anno if obj["num_keypoints"] != 0]
         keypoints = [obj["keypoints"] for obj in anno]
         boxes = [obj["bbox"] for obj in anno]
         keypoints = torch.as_tensor(keypoints, dtype=torch.float32).reshape(-1, 14, 3)
@@ -127,10 +134,7 @@ class ConvertCocoPolysToMask(object):
 
 
 def make_coco_transforms(image_set, fix_size=False, args=None):
-    normalize = T.Compose([
-        T.ToTensor(),
-        T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-    ])
+    normalize = T.Compose([T.ToTensor(), T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
 
     # config the params for data aug
     scales = [480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800]
@@ -139,13 +143,13 @@ def make_coco_transforms(image_set, fix_size=False, args=None):
     scales2_crop = [384, 600]
 
     # update args from config files
-    scales = getattr(args, 'data_aug_scales', scales)
-    max_size = getattr(args, 'data_aug_max_size', max_size)
-    scales2_resize = getattr(args, 'data_aug_scales2_resize', scales2_resize)
-    scales2_crop = getattr(args, 'data_aug_scales2_crop', scales2_crop)
+    scales = getattr(args, "data_aug_scales", scales)
+    max_size = getattr(args, "data_aug_max_size", max_size)
+    scales2_resize = getattr(args, "data_aug_scales2_resize", scales2_resize)
+    scales2_crop = getattr(args, "data_aug_scales2_crop", scales2_crop)
 
     # resize them
-    data_aug_scale_overlap = getattr(args, 'data_aug_scale_overlap', None)
+    data_aug_scale_overlap = getattr(args, "data_aug_scale_overlap", None)
     if data_aug_scale_overlap is not None and data_aug_scale_overlap > 0:
         data_aug_scale_overlap = float(data_aug_scale_overlap)
         scales = [int(i * data_aug_scale_overlap) for i in scales]
@@ -154,46 +158,52 @@ def make_coco_transforms(image_set, fix_size=False, args=None):
         scales2_crop = [int(i * data_aug_scale_overlap) for i in scales2_crop]
 
     datadict_for_print = {
-        'scales': scales,
-        'max_size': max_size,
-        'scales2_resize': scales2_resize,
-        'scales2_crop': scales2_crop
+        "scales": scales,
+        "max_size": max_size,
+        "scales2_resize": scales2_resize,
+        "scales2_crop": scales2_crop,
     }
     print("data_aug_params:", json.dumps(datadict_for_print, indent=2))
 
-    if image_set == 'train':
+    if image_set == "train":
         if fix_size:
-            return T.Compose([
+            return T.Compose(
+                [
+                    T.RandomHorizontalFlip(),
+                    T.RandomResize([(max_size, max(scales))]),
+                    normalize,
+                ]
+            )
+
+        return T.Compose(
+            [
                 T.RandomHorizontalFlip(),
-                T.RandomResize([(max_size, max(scales))]),
-                normalize,
-            ])
-
-
-        return T.Compose([
-            T.RandomHorizontalFlip(),
-            T.RandomSelect(
-                T.RandomResize(scales, max_size=max_size),
-                T.Compose([
-                    T.RandomResize(scales2_resize),
-                    T.RandomSizeCrop(*scales2_crop),
+                T.RandomSelect(
                     T.RandomResize(scales, max_size=max_size),
-                ])
-            ),
-            normalize,
-        ])
-    if image_set in ['val', 'test']:
+                    T.Compose(
+                        [
+                            T.RandomResize(scales2_resize),
+                            T.RandomSizeCrop(*scales2_crop),
+                            T.RandomResize(scales, max_size=max_size),
+                        ]
+                    ),
+                ),
+                normalize,
+            ]
+        )
+    if image_set in ["val", "test"]:
+
+        return T.Compose(
+            [
+                T.RandomResize([max(scales)], max_size=max_size),
+                normalize,
+            ]
+        )
+
+    raise ValueError(f"unknown {image_set}")
 
 
-        return T.Compose([
-            T.RandomResize([max(scales)], max_size=max_size),
-            normalize,
-        ])
-
-    raise ValueError(f'unknown {image_set}')
 def build(image_set, args):
     root = Path(args.crowdpose_path)
-    dataset = CocoDetection(root, image_set, transforms=make_coco_transforms(image_set),
-                            return_masks=args.masks)
+    dataset = CocoDetection(root, image_set, transforms=make_coco_transforms(image_set), return_masks=args.masks)
     return dataset
-

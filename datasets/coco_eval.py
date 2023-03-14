@@ -1,18 +1,22 @@
-import os
 import contextlib
 import copy
+import os
+
 import numpy as np
-import torch
-from pycocotools.cocoeval import COCOeval
-from pycocotools.coco import COCO
 import pycocotools.mask as mask_util
+import torch
+
+from pycocotools.coco import COCO
+from pycocotools.cocoeval import COCOeval
+
 from util.misc import all_gather
+
 
 class CocoEvaluator(object):
     def __init__(self, coco_gt, iou_types, useCats=True):
         assert isinstance(iou_types, (list, tuple))
         COCO_PATH = os.environ.get("EDPOSE_COCO_PATH")
-        cocodir = COCO_PATH + '/annotations/person_keypoints_val2017.json'
+        cocodir = COCO_PATH + "/annotations/person_keypoints_val2017.json"
         coco_gt = COCO(cocodir)
         self.coco_gt = coco_gt
 
@@ -42,7 +46,7 @@ class CocoEvaluator(object):
                     {
                         "image_id": original_id,
                         "category_id": labels[k],
-                        'keypoints': keypoint,
+                        "keypoints": keypoint,
                         "score": scores[k],
                     }
                     for k, keypoint in enumerate(keypoints)
@@ -50,6 +54,7 @@ class CocoEvaluator(object):
             )
 
         return coco_results
+
     def update(self, predictions):
         img_ids = list(np.unique(list(predictions.keys())))
         self.img_ids.extend(img_ids)
@@ -57,7 +62,7 @@ class CocoEvaluator(object):
         for iou_type in self.iou_types:
             results = self.prepare(predictions, iou_type)
             # suppress pycocotools prints
-            with open(os.devnull, 'w') as devnull:
+            with open(os.devnull, "w") as devnull:
                 with contextlib.redirect_stdout(devnull):
                     coco_dt = COCO.loadRes(self.coco_gt, results) if results else COCO()
             coco_eval = self.coco_eval[iou_type]
@@ -110,7 +115,6 @@ class CocoEvaluator(object):
             else:
                 labels = prediction["labels"]
 
-        
             try:
                 coco_results.extend(
                     [
@@ -124,7 +128,9 @@ class CocoEvaluator(object):
                     ]
                 )
             except:
-                import ipdb; ipdb.set_trace()
+                import ipdb
+
+                ipdb.set_trace()
         return coco_results
 
     def prepare_for_coco_segmentation(self, predictions):
@@ -143,8 +149,7 @@ class CocoEvaluator(object):
             labels = prediction["labels"].tolist()
 
             rles = [
-                mask_util.encode(np.array(mask[0, :, :, np.newaxis], dtype=np.uint8, order="F"))[0]
-                for mask in masks
+                mask_util.encode(np.array(mask[0, :, :, np.newaxis], dtype=np.uint8, order="F"))[0] for mask in masks
             ]
             for rle in rles:
                 rle["counts"] = rle["counts"].decode("utf-8")
@@ -178,7 +183,7 @@ class CocoEvaluator(object):
                     {
                         "image_id": original_id,
                         "category_id": labels[k],
-                        'keypoints': keypoint,
+                        "keypoints": keypoint,
                         "score": scores[k],
                     }
                     for k, keypoint in enumerate(keypoints)
@@ -224,17 +229,15 @@ def create_common_coco_eval(coco_eval, img_ids, eval_imgs):
     coco_eval._paramsEval = copy.deepcopy(coco_eval.params)
 
 
-
-
 def evaluate(self):
-    '''
+    """
     Run per image evaluation on given images and store results (a list of dict) in self.evalImgs
     :return: None
-    '''
+    """
     p = self.params
     if p.useSegm is not None:
-        p.iouType = 'segm' if p.useSegm == 1 else 'bbox'
-        print('useSegm (deprecated) is not None. Running {} evaluation'.format(p.iouType))
+        p.iouType = "segm" if p.useSegm == 1 else "bbox"
+        print("useSegm (deprecated) is not None. Running {} evaluation".format(p.iouType))
     # print('Evaluate annotation type *{}*'.format(p.iouType))
     p.imgIds = list(np.unique(p.imgIds))
     if p.useCats:
@@ -245,27 +248,18 @@ def evaluate(self):
     self._prepare()
     catIds = p.catIds if p.useCats else [-1]
 
-    if p.iouType == 'segm' or p.iouType == 'bbox':
+    if p.iouType == "segm" or p.iouType == "bbox":
         computeIoU = self.computeIoU
-    elif p.iouType == 'keypoints':
+    elif p.iouType == "keypoints":
         computeIoU = self.computeOks
-    self.ious = {
-        (imgId, catId): computeIoU(imgId, catId)
-        for imgId in p.imgIds
-        for catId in catIds}
-
+    self.ious = {(imgId, catId): computeIoU(imgId, catId) for imgId in p.imgIds for catId in catIds}
 
     evaluateImg = self.evaluateImg
     maxDet = p.maxDets[-1]
     evalImgs = [
-        evaluateImg(imgId, catId, areaRng, maxDet)
-        for catId in catIds
-        for areaRng in p.areaRng
-        for imgId in p.imgIds
+        evaluateImg(imgId, catId, areaRng, maxDet) for catId in catIds for areaRng in p.areaRng for imgId in p.imgIds
     ]
     evalImgs = np.asarray(evalImgs).reshape(len(catIds), len(p.areaRng), len(p.imgIds))
     self._paramsEval = copy.deepcopy(self.params)
 
     return p.imgIds, evalImgs
-
-

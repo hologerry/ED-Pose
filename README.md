@@ -194,7 +194,7 @@ export pretrain_model_path=/path/to/your/swin_L_384_22k
 ```
 #For ResNet-50:
 export EDPOSE_COCO_PATH=/path/to/your/cocodir
-  python -m torch.distributed.launch --nproc_per_node=4  main.py \
+  torchrun --nproc_per_node=4  main.py \
  --output_dir "logs/coco_r50" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=60 lr_drop=55 num_body_points=17 backbone='resnet50' \
@@ -204,7 +204,7 @@ export EDPOSE_COCO_PATH=/path/to/your/cocodir
 #For Swin-L:
 export EDPOSE_COCO_PATH=/path/to/your/cocodir
 export pretrain_model_path=/path/to/your/swin_L_384_22k
-  python -m torch.distributed.launch --nproc_per_node=4 main.py \
+  torchrun --nproc_per_node=4 main.py \
  --output_dir "logs/coco_swinl" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=60 lr_drop=55 num_body_points=17 backbone='swin_L_384_22k' \
@@ -249,7 +249,7 @@ export pretrain_model_path=/path/to/your/swin_L_384_22k
 ```
 #For ResNet-50:
 export EDPOSE_CrowdPose_PATH=/path/to/your/crowdpose_dir
-  python -m torch.distributed.launch --nproc_per_node=4  main.py \
+  torchrun --nproc_per_node=4  main.py \
  --output_dir "logs/crowdpose_r50" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=80 lr_drop=75 num_body_points=14 backbone='resnet50' \
@@ -259,7 +259,7 @@ export EDPOSE_CrowdPose_PATH=/path/to/your/crowdpose_dir
 #For Swin-L:
 export EDPOSE_CrowdPose_PATH=/path/to/your/crowdpose_dir
 export pretrain_model_path=/path/to/your/swin_L_384_22k
-  python -m torch.distributed.launch --nproc_per_node=4 main.py \
+  torchrun --nproc_per_node=4 main.py \
  --output_dir "logs/crowdpose_swinl" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=80 lr_drop=75 num_body_points=14 backbone='swin_L_384_22k' \
@@ -279,7 +279,7 @@ We have put the Swin-L model pretrained on ImageNet-22k [here](https://drive.goo
 
 ```
 export EDPOSE_COCO_PATH=/path/to/your/cocodir
-  python -m torch.distributed.launch --nproc_per_node=4  main.py \
+  torchrun --nproc_per_node=4  main.py \
  --output_dir "logs/coco_r50" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=60 lr_drop=55 num_body_points=17 backbone='resnet50' \
@@ -296,7 +296,7 @@ export EDPOSE_COCO_PATH=/path/to/your/cocodir
 ```
 export EDPOSE_COCO_PATH=/path/to/your/cocodir
 export pretrain_model_path=/path/to/your/swin_L_384_22k
-  python -m torch.distributed.launch --nproc_per_node=4 main.py \
+  torchrun --nproc_per_node=4 main.py \
  --output_dir "logs/coco_swinl" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=60 lr_drop=55 num_body_points=17 backbone='swin_L_384_22k' \
@@ -313,7 +313,7 @@ export pretrain_model_path=/path/to/your/swin_L_384_22k
 ```
 export EDPOSE_COCO_PATH=/path/to/your/cocodir
 export pretrain_model_path=/path/to/your/swin_L_384_22k
-  python -m torch.distributed.launch --nproc_per_node=4 main.py \
+  torchrun --nproc_per_node=4 main.py \
  --output_dir "logs/coco_swinl" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=60 lr_drop=55 num_body_points=17 backbone='swin_L_384_22k' \
@@ -366,7 +366,7 @@ export pretrain_model_path=/path/to/your/swin_L_384_22k
 ```
 export EDPOSE_CrowdPose_PATH=/path/to/your/crowdpose_dir
 export pretrain_model_path=/path/to/your/swin_L_384_22k
-  python -m torch.distributed.launch --nproc_per_node=4 main.py \
+  torchrun --nproc_per_node=4 main.py \
  --output_dir "logs/crowdpose_swinl" \
  -c config/edpose.cfg.py \
  --options batch_size=4 epochs=80 lr_drop=75 num_body_points=14 backbone='swin_L_384_22k' \

@@ -2,7 +2,9 @@
 """
 Transforms and data augmentation for both image + bbox.
 """
-import random, os
+import os
+import random
+
 import PIL
 import torch
 import torchvision.transforms as T
@@ -36,19 +38,18 @@ def crop(image, target, region):
 
     if "masks" in target:
         # FIXME should we update the area here if there are no boxes?
-        target['masks'] = target['masks'][:, i:i + h, j:j + w]
+        target["masks"] = target["masks"][:, i : i + h, j : j + w]
         fields.append("masks")
-
 
     # remove elements for which the boxes or masks that have zero area
     if "boxes" in target or "masks" in target:
         # favor boxes selection when defining which elements to keep
         # this is compatible with previous implementation
         if "boxes" in target:
-            cropped_boxes = target['boxes'].reshape(-1, 2, 2)
+            cropped_boxes = target["boxes"].reshape(-1, 2, 2)
             keep = torch.all(cropped_boxes[:, 1, :] > cropped_boxes[:, 0, :], dim=1)
         else:
-            keep = target['masks'].flatten(1).any(1)
+            keep = target["masks"].flatten(1).any(1)
 
         for field in fields:
             target[field] = target[field][keep]
@@ -56,10 +57,10 @@ def crop(image, target, region):
     if "keypoints" in target:
         max_size = torch.as_tensor([w, h], dtype=torch.float32)
         keypoints = target["keypoints"]
-        cropped_keypoints = keypoints.view(-1, 3)[:,:2] - torch.as_tensor([j, i])
+        cropped_keypoints = keypoints.view(-1, 3)[:, :2] - torch.as_tensor([j, i])
         cropped_keypoints = torch.min(cropped_keypoints, max_size)
         cropped_keypoints = cropped_keypoints.clamp(min=0)
-        cropped_keypoints = torch.cat([cropped_keypoints, keypoints.view(-1, 3)[:,2].unsqueeze(1)], dim=1)
+        cropped_keypoints = torch.cat([cropped_keypoints, keypoints.view(-1, 3)[:, 2].unsqueeze(1)], dim=1)
         target["keypoints"] = cropped_keypoints.view(target["keypoints"].shape[0], 14, 3)
         # fields.append("keypoints")
 
@@ -78,20 +79,18 @@ def hflip(image, target):
         target["boxes"] = boxes
 
     if "keypoints" in target:
-        flip_pairs = [[0, 1],
-                  [2, 3],
-                  [4, 5],
-                  [6, 7],
-                  [8, 9],
-                  [10, 11]]
+        flip_pairs = [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9], [10, 11]]
         keypoints = target["keypoints"]
-        keypoints[:,:,0] = w - keypoints[:,:, 0]-1
+        keypoints[:, :, 0] = w - keypoints[:, :, 0] - 1
         for pair in flip_pairs:
-            keypoints[:,pair[0], :], keypoints[:,pair[1], :] = keypoints[:,pair[1], :], keypoints[:,pair[0], :].clone()
+            keypoints[:, pair[0], :], keypoints[:, pair[1], :] = (
+                keypoints[:, pair[1], :],
+                keypoints[:, pair[0], :].clone(),
+            )
         target["keypoints"] = keypoints
 
     if "masks" in target:
-        target['masks'] = target['masks'].flip(-1)
+        target["masks"] = target["masks"].flip(-1)
 
     return flipped_image, target
 
@@ -154,8 +153,7 @@ def resize(image, target, size, max_size=None):
     target["size"] = torch.tensor([h, w])
 
     if "masks" in target:
-        target['masks'] = interpolate(
-            target['masks'][:, None].float(), size, mode="nearest")[:, 0] > 0.5
+        target["masks"] = interpolate(target["masks"][:, None].float(), size, mode="nearest")[:, 0] > 0.5
 
     return rescaled_image, target
 
@@ -169,7 +167,7 @@ def pad(image, target, padding):
     # should we do something wrt the original size?
     target["size"] = torch.tensor(padded_image.size[::-1])
     if "masks" in target:
-        target['masks'] = torch.nn.functional.pad(target['masks'], (0, padding[0], 0, padding[1]))
+        target["masks"] = torch.nn.functional.pad(target["masks"], (0, padding[0], 0, padding[1]))
     return padded_image, target
 
 
@@ -209,8 +207,8 @@ class CenterCrop(object):
     def __call__(self, img, target):
         image_width, image_height = img.size
         crop_height, crop_width = self.size
-        crop_top = int(round((image_height - crop_height) / 2.))
-        crop_left = int(round((image_width - crop_width) / 2.))
+        crop_top = int(round((image_height - crop_height) / 2.0))
+        crop_left = int(round((image_width - crop_width) / 2.0))
         return crop(img, target, (crop_top, crop_left, crop_height, crop_width))
 
 
@@ -250,6 +248,7 @@ class RandomSelect(object):
     Randomly selects between transforms1 and transforms2,
     with probability p for transforms1 and (1 - p) for transforms2
     """
+
     def __init__(self, transforms1, transforms2, p=0.5):
         self.transforms1 = transforms1
         self.transforms2 = transforms2
@@ -267,7 +266,6 @@ class ToTensor(object):
 
 
 class RandomErasing(object):
-
     def __init__(self, *args, **kwargs):
         self.eraser = T.RandomErasing(*args, **kwargs)
 
@@ -293,16 +291,16 @@ class Normalize(object):
             target["boxes"] = boxes
         if "area" in target:
             area = target["area"]
-            area = area / (torch.tensor(w, dtype=torch.float32)*torch.tensor(h, dtype=torch.float32))
+            area = area / (torch.tensor(w, dtype=torch.float32) * torch.tensor(h, dtype=torch.float32))
             target["area"] = area
         else:
-            area = target["boxes"][:,-1]*target["boxes"][:,-2]
+            area = target["boxes"][:, -1] * target["boxes"][:, -2]
             target["area"] = area
         if "keypoints" in target:
             keypoints = target["keypoints"]  # (4, 14, 3) (num_person, num_keypoints, 3)
             V = keypoints[:, :, 2]  # visibility of the keypoints torch.Size([number of persons, 14])
             V[V == 2] = 1
-            Z=keypoints[:, :, :2]
+            Z = keypoints[:, :, :2]
             Z = Z.contiguous().view(-1, 2 * 14)
             Z = Z / torch.tensor([w, h] * 14, dtype=torch.float32)
             all_keypoints = torch.cat([Z, V], dim=1)  # torch.Size([number of persons, 2+28+14])
@@ -327,23 +325,24 @@ class Compose(object):
         format_string += "\n)"
         return format_string
 
-def generate_target(joints,heatmap_size,sigma):
-    '''
+
+def generate_target(joints, heatmap_size, sigma):
+    """
     :param joints:  [num_joints, 3]
     :return: target
-    '''
-    num_keypoints,_=joints.shape
+    """
+    num_keypoints, _ = joints.shape
     target_weight = torch.ones(num_keypoints, 1)
-    target_weight[:, 0] = joints[:,-1]
-    #target_type == 'gaussian'
-    target = torch.zeros(num_keypoints,
-                      heatmap_size[1],
-                      heatmap_size[0])
+    target_weight[:, 0] = joints[:, -1]
+    # target_type == 'gaussian'
+    target = torch.zeros(num_keypoints, heatmap_size[1], heatmap_size[0])
 
     tmp_size = sigma * 3
 
     for joint_id in range(num_keypoints):
-        target_weight[joint_id] = adjust_target_weight(joints[joint_id],heatmap_size, target_weight[joint_id], tmp_size)
+        target_weight[joint_id] = adjust_target_weight(
+            joints[joint_id], heatmap_size, target_weight[joint_id], tmp_size
+        )
 
         if target_weight[joint_id] == 0:
             continue
@@ -358,19 +357,19 @@ def generate_target(joints,heatmap_size,sigma):
 
         v = target_weight[joint_id]
         if v > 0.5:
-            target[joint_id] = torch.exp(- ((x - mu_x) ** 2 + (y - mu_y) ** 2) / (2 * sigma ** 2))
+            target[joint_id] = torch.exp(-((x - mu_x) ** 2 + (y - mu_y) ** 2) / (2 * sigma**2))
 
     return target
 
-def adjust_target_weight(joint,heatmap_size, target_weight, tmp_size):
+
+def adjust_target_weight(joint, heatmap_size, target_weight, tmp_size):
     # feat_stride = self.image_size / self.heatmap_size
     mu_x = joint[0]
     mu_y = joint[1]
     # Check that any part of the gaussian is in-bounds
     ul = [int(mu_x - tmp_size), int(mu_y - tmp_size)]
     br = [int(mu_x + tmp_size + 1), int(mu_y + tmp_size + 1)]
-    if ul[0] >= heatmap_size[0] or ul[1] >= heatmap_size[1] \
-            or br[0] < 0 or br[1] < 0:
+    if ul[0] >= heatmap_size[0] or ul[1] >= heatmap_size[1] or br[0] < 0 or br[1] < 0:
         # If not, just return the image as is
         target_weight = 0
     return target_weight
