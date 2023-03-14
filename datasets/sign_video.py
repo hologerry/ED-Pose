@@ -21,6 +21,7 @@ class SignVideoData(torch.utils.data.Dataset):
         with open(split_fn, "rb") as f:
             self.split_dicts = pickle.load(f)
 
+        self.split_dicts = self.split_dicts[:100]
         self.frames_dir = os.path.join(root_path, dataset_name, "frames")
         self.frames_names = []
         for vid_dict in self.split_dicts:
